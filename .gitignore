@@ -1,0 +1,28 @@
+# Runtime logs, videos, recordings
+logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+
+# ROS2 build artifacts
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# Isaac Sim / Omniverse caches
+*.usd.lock
+.thumbs/
+
+# Large binary checkpoints (kept external, see CLAUDE.md)
+*.pt
+
+# OS / editor
+.DS_Store
+*.swp
+.vscode/
+.idea/
