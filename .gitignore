@@ -21,6 +21,9 @@ ros2_ws/log/
 # Large binary checkpoints (kept external, see CLAUDE.md)
 *.pt
 
+# Claude Code local session state
+.claude/
+
 # OS / editor
 .DS_Store
 *.swp
