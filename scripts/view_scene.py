@@ -6,8 +6,12 @@ scene. It only renders — no physics stepping — so it is light on VRAM.
 
 Usage (from project root, isaaclab_env activated):
 
-    /home/msi/miniforge3/envs/isaaclab_env/bin/python \\
-        scripts/view_scene.py --usd isaac_scenes/empty_test_scene.usd
+    # a local USD file
+    python scripts/view_scene.py --usd isaac_scenes/empty_test_scene.usd
+
+    # a stock Isaac Sim environment asset (under ISAAC_NUCLEUS_DIR/Environments/)
+    python scripts/view_scene.py --env Simple_Warehouse/warehouse.usd
+    python scripts/view_scene.py --env Simple_Warehouse/full_warehouse.usd
 
 Close the Isaac Sim window (or Ctrl+C in the terminal) to quit.
 Mouse in the viewport: left-drag = orbit, scroll = zoom, middle-drag = pan.
@@ -25,7 +29,15 @@ parser.add_argument(
     "--usd",
     type=str,
     default="isaac_scenes/empty_test_scene.usd",
-    help="Path to the USD scene to open.",
+    help="Path to a local USD scene to open.",
+)
+parser.add_argument(
+    "--env",
+    type=str,
+    default=None,
+    help="Stock Isaac Sim environment asset, relative to "
+    "ISAAC_NUCLEUS_DIR/Environments/ (e.g. Simple_Warehouse/warehouse.usd). "
+    "Overrides --usd when set.",
 )
 AppLauncher.add_app_launcher_args(parser)
 args_cli = parser.parse_args()
@@ -40,9 +52,15 @@ simulation_app = app_launcher.app
 
 import omni.usd  # noqa: E402
 
-usd_path = os.path.abspath(args_cli.usd)
-if not os.path.isfile(usd_path):
-    raise FileNotFoundError(f"USD not found: {usd_path}")
+if args_cli.env is not None:
+    # Stock Isaac Sim environment asset (remote/nucleus path, not a local file).
+    from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR  # noqa: E402
+
+    usd_path = f"{ISAAC_NUCLEUS_DIR}/Environments/{args_cli.env}"
+else:
+    usd_path = os.path.abspath(args_cli.usd)
+    if not os.path.isfile(usd_path):
+        raise FileNotFoundError(f"USD not found: {usd_path}")
 
 omni.usd.get_context().open_stage(usd_path)
 print(f"[INFO] Opened {usd_path} — close the window to quit.", flush=True)

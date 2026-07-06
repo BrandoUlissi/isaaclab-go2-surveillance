@@ -1,0 +1,35 @@
+# Room layout for the mapping scene.
+# Edit and save this file; `python scripts/build_room.py --live` rebuilds the
+# Isaac Sim viewport on every save. Units: metres. World XY plane, +z is up.
+# Angles in degrees (yaw about +z: 0 = wall runs along X, 90 = along Y).
+
+floor:
+  size_x: 10.0
+  size_y: 10.0
+  color: [0.30, 0.30, 0.33]
+
+light:
+  intensity: 1000.0          # flat dome light, no harsh shadows / no ceiling
+
+wall_height: 1.5
+wall_thickness: 0.15
+wall_color: [0.70, 0.70, 0.72]
+
+# Walls: [center_x, center_y, length, yaw_deg]
+walls:
+  - [0.0,   5.0, 10.0,  0.0]   # north perimeter
+  - [0.0,  -5.0, 10.0,  0.0]   # south perimeter
+  - [5.0,   0.0, 10.0, 90.0]   # east perimeter
+  - [-5.0,  0.0, 10.0, 90.0]   # west perimeter
+  - [-2.0,  0.0,  6.0,  0.0]   # internal divider (leaves a doorway toward the east side)
+
+# Obstacles (boxes): [center_x, center_y, size_x, size_y, size_z]
+obstacle_color: [0.80, 0.45, 0.20]
+obstacles:
+  - [2.0,   2.0, 0.8, 0.8, 0.7]
+  - [-2.5, -2.5, 0.6, 1.2, 0.9]
+
+# Raised platforms (low boxes): [center_x, center_y, size_x, size_y, height]
+platform_color: [0.25, 0.55, 0.75]
+platforms:
+  - [2.5, -2.5, 2.0, 2.0, 0.25]
