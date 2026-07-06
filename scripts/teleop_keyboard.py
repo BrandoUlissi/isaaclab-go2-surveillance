@@ -19,10 +19,10 @@ Usage (from project root, isaaclab_env activated):
         scripts/teleop_keyboard.py
 
 Keyboard (focus the Isaac Sim window):
-    Up / Down     : forward / backward   (+/- v_x)
-    Left / Right  : strafe left / right  (+/- v_y)
-    Z / X         : yaw left / right     (+/- omega_z)
-    L             : reset command to zero
+    W / S : forward / backward   (+/- v_x)
+    A / D : strafe left / right  (+/- v_y)
+    Q / E : yaw left / right     (+/- omega_z)
+    L     : reset command to zero
 Close the window (or Ctrl+C) to quit.
 """
 
@@ -61,6 +61,7 @@ simulation_app = app_launcher.app
 # ── 2. Post-launch imports ────────────────────────────────────────────────────
 
 import gymnasium as gym  # noqa: E402
+import numpy as np  # noqa: E402
 import torch  # noqa: E402
 
 from rsl_rl.runners import OnPolicyRunner  # noqa: E402
@@ -74,6 +75,25 @@ from isaaclab_tasks.utils import load_cfg_from_registry, parse_env_cfg  # noqa: 
 # Register the push-recovery task from the predecessor project.
 sys.path.insert(0, _PRED_SRC)
 import isaaclab_go2_pushrecovery  # noqa: F401, E402
+
+
+class Se2KeyboardWASD(Se2Keyboard):
+    """Se2Keyboard remapped to WASD (+ Q/E) instead of arrow keys.
+
+    Only the key bindings change; the press/release accumulation and the
+    ``advance() -> [v_x, v_y, omega_z]`` behaviour are inherited unchanged.
+    Body-frame convention: +v_y is left, +omega_z is yaw-left (CCW).
+    """
+
+    def _create_key_bindings(self):
+        self._INPUT_KEY_MAPPING = {
+            "W": np.asarray([1.0, 0.0, 0.0]) * self.v_x_sensitivity,   # forward
+            "S": np.asarray([-1.0, 0.0, 0.0]) * self.v_x_sensitivity,  # backward
+            "A": np.asarray([0.0, 1.0, 0.0]) * self.v_y_sensitivity,   # strafe left
+            "D": np.asarray([0.0, -1.0, 0.0]) * self.v_y_sensitivity,  # strafe right
+            "Q": np.asarray([0.0, 0.0, 1.0]) * self.omega_z_sensitivity,   # yaw left
+            "E": np.asarray([0.0, 0.0, -1.0]) * self.omega_z_sensitivity,  # yaw right
+        }
 
 
 def main() -> None:
@@ -105,13 +125,18 @@ def main() -> None:
     policy = runner.get_inference_policy(device=env.unwrapped.device)
 
     # Keyboard teleop device -> [v_x, v_y, omega_z].
-    keyboard = Se2Keyboard(
+    keyboard = Se2KeyboardWASD(
         v_x_sensitivity=args_cli.vx_scale,
         v_y_sensitivity=args_cli.vy_scale,
         omega_z_sensitivity=args_cli.wz_scale,
     )
     keyboard.reset()
-    print(keyboard, flush=True)
+    print(
+        "[INFO] Teleop keys (focus the Isaac Sim window):\n"
+        "         W/S = forward/back (v_x)   A/D = strafe left/right (v_y)\n"
+        "         Q/E = yaw left/right (omega_z)   L = reset command to zero",
+        flush=True,
+    )
 
     # Handle to the velocity-command buffer we overwrite each step.
     cmd_term = env.unwrapped.command_manager.get_term("base_velocity")
