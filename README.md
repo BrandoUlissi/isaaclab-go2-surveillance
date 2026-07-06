@@ -1,6 +1,7 @@
 # isaaclab-go2-surveillance
 
-> **Status: Week 1 — in progress.** Initial repository setup and environment validation.
+> **Status: Week 2 — done.** Locomotion bring-up: the push-recovery policy
+> drives the Go2 from manual velocity commands. Next: Week 3 (ROS2 bridge).
 
 ## Project goal
 
@@ -57,6 +58,26 @@ docs/           Run notes, architecture, project plan
 notebooks/      Optional analysis
 logs/           Runtime logs and videos (gitignored)
 ```
+
+## Running (milestones so far)
+
+Activate the Python env first: `conda activate isaaclab_env`. First Isaac Sim
+launch is slow (asset loading, ~1–2 min).
+
+```bash
+# Week 1 — create/validate the empty test scene (headless) and export USD
+python scripts/create_empty_scene.py --output isaac_scenes/empty_test_scene.usd
+
+# View any saved USD scene in the Isaac Sim GUI (orbit with the mouse)
+python scripts/view_scene.py --usd isaac_scenes/empty_test_scene.usd
+
+# Week 2 — drive the Go2 with the push-recovery policy (keyboard teleop, GUI)
+python scripts/teleop_keyboard.py
+#   W/S = forward/back (v_x)   A/D = strafe (v_y)   Q/E = yaw (omega_z)   L = stop
+```
+
+Week 2 teleop requires the predecessor repo checked out at
+`~/isaaclab-go2-locomotion` (it provides the push-recovery policy and gym task).
 
 ## Documentation
 
