@@ -4,32 +4,40 @@
 # Angles in degrees (yaw about +z: 0 = wall runs along X, 90 = along Y).
 
 floor:
-  size_x: 10.0
-  size_y: 10.0
+  size_x: 50.0
+  size_y: 50.0
   color: [0.30, 0.30, 0.33]
 
 light:
   intensity: 1000.0          # flat dome light, no harsh shadows / no ceiling
 
-wall_height: 1.5
+wall_height: 2.5
 wall_thickness: 0.15
 wall_color: [0.70, 0.70, 0.72]
 
 # Walls: [center_x, center_y, length, yaw_deg]
 walls:
-  - [0.0,   5.0, 10.0,  0.0]   # north perimeter
-  - [0.0,  -5.0, 10.0,  0.0]   # south perimeter
-  - [5.0,   0.0, 10.0, 90.0]   # east perimeter
-  - [-5.0,  0.0, 10.0, 90.0]   # west perimeter
-  - [-2.0,  0.0,  6.0,  0.0]   # internal divider (leaves a doorway toward the east side)
+  - [0.0,   15.0, 15.0,  0.0]   # north perimeter
+  - [0.0,  -15.0, 15.0,  0.0]   # south perimeter
+  - [7.5,   0.0, 30.0, 90.0]   # east perimeter
+  - [-7.5,  0.0, 30.0, 90.0]   # west perimeter
+  - [-4.5,  0.0,  6.0,  0.0]   # internal divider (leaves a doorway toward the east side)
+  - [4.5,   5.0,  6.0,  0.0]   # internal divider (leaves a doorway toward the west side)
+  - [1.5,   8.0,  6.0,  90.0]   # internal divider (leaves a doorway toward the center)
+  - [-1.5,  -3.0,  6.0,  90.0]   # internal divider (leaves a doorway toward the center)
+  - [-4.5,  9.0,  6.0,  0.0]   # internal divider (leaves a doorway toward the east side)
 
 # Obstacles (boxes): [center_x, center_y, size_x, size_y, size_z]
 obstacle_color: [0.80, 0.45, 0.20]
 obstacles:
   - [2.0,   2.0, 0.8, 0.8, 0.7]
-  - [-2.5, -2.5, 0.6, 1.2, 0.9]
+  - [-4.0, -2.5, 0.6, 1.2, 0.9]
+  - [3.0,   -10.0, 1.5, 0.5, 2.0]
+  - [-3.0,  12.0, 1.0, 0.5, 1.2]
+  - [-4.0,   5.0,  1.0, 1.0, 1.5]
+  - [-4.0,   -10.0,  2.5, 1.5, 2.0]
 
 # Raised platforms (low boxes): [center_x, center_y, size_x, size_y, height]
 platform_color: [0.25, 0.55, 0.75]
 platforms:
-  - [2.5, -2.5, 2.0, 2.0, 0.25]
+  - [2.5, -2.5, 2.0, 2.0, 2.0]
