@@ -1,7 +1,8 @@
 # isaaclab-go2-surveillance
 
-> **Status: Week 2 — done.** Locomotion bring-up: the push-recovery policy
-> drives the Go2 from manual velocity commands. Next: Week 3 (ROS2 bridge).
+> **Status: Week 4 — ROS2 bridge.** Isaac Sim ↔ ROS2 topic bridge: the Go2 is
+> driven over `/cmd_vel` while `/odom`, `/clock` and TF are published to the ROS
+> graph. Week 3 (static room scene) is done. Next: Week 5 (RGBD camera).
 
 ## Project goal
 
@@ -74,10 +75,34 @@ python scripts/view_scene.py --usd isaac_scenes/empty_test_scene.usd
 # Week 2 — drive the Go2 with the push-recovery policy (keyboard teleop, GUI)
 python scripts/teleop_keyboard.py
 #   W/S = forward/back (v_x)   A/D = strafe (v_y)   Q/E = yaw (omega_z)   L = stop
+
+# Week 3 — build the static room from the YAML layout, then bake it to USD
+python scripts/build_room.py --live                        # edit layout live in the GUI
+python scripts/build_room.py --export isaac_scenes/room.usd # bake to USD (headless)
+python scripts/view_scene.py --usd isaac_scenes/room.usd     # view the baked room
 ```
 
-Week 2 teleop requires the predecessor repo checked out at
-`~/isaaclab-go2-locomotion` (it provides the push-recovery policy and gym task).
+Week 2/4 need the predecessor repo checked out at `~/isaaclab-go2-locomotion`
+(it provides the push-recovery policy and gym task).
+
+### Week 4 — drive the Go2 over ROS2
+
+The bridge runs Isaac Sim + the policy and hosts an in-process ROS2 node.
+Source ROS2 **before** activating conda (order matters):
+
+```bash
+source /opt/ros/humble/setup.bash && conda activate isaaclab_env
+
+# terminal A — sim + bridge (subscribes /cmd_vel; publishes /odom, /clock, TF)
+python scripts/go2_ros2_bridge.py
+
+# terminal B — publish /cmd_vel (any Twist source works)
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+# inspect the graph
+ros2 topic hz /odom
+ros2 topic echo /clock --once
+```
 
 ## Documentation
 
